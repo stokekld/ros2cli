@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.5)
 
 project(ros2lifecycle_test_fixtures)
 
+include(CheckLibraryExists)
+check_library_exists(atomic __atomic_load_8 "" HAVE_LIBATOMICS)
+
 # Default to C++14
 if(NOT CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 14)
@@ -24,6 +27,9 @@ add_executable(simple_lifecycle_node
 target_link_libraries(simple_lifecycle_node
   ${rclcpp_lifecycle_LIBRARIES}
 )
+if(HAVE_LIBATOMICS)
+  target_link_libraries(simple_lifecycle_node atomic)
+endif()
 
 install(TARGETS
   simple_lifecycle_node
